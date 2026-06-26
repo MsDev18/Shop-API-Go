@@ -1,0 +1,19 @@
+package migrator
+
+import (
+	"fmt"
+
+	"github.com/golang-migrate/migrate/v4"
+)
+
+func (m Migrator) Up() {
+	err := m.migrate.Up()
+	if err != nil {
+		if err == migrate.ErrNoChange {
+			fmt.Println("No new migrations to apply")
+			return
+		}
+		panic(fmt.Errorf("error in up migration : %v", err))
+	}
+	fmt.Println("Migration up completed successfully")
+}
