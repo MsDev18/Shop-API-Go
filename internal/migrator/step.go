@@ -1,6 +1,7 @@
 package migrator
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -12,7 +13,7 @@ func (m Migrator) Step(step int) error {
 	if err != nil {
 		_, isShortLimitErr := err.(migrate.ErrShortLimit)
 		switch {
-		case err == migrate.ErrNoChange:
+		case errors.Is(err ,migrate.ErrNoChange):
 			fmt.Println("no change in migration")
 			return nil
 		// type assertion for check error type
@@ -23,7 +24,7 @@ func (m Migrator) Step(step int) error {
 			fmt.Println("no more migrations to apply")
 			return nil
 		default:
-			return fmt.Errorf("error in step migration: %v", err)
+			return fmt.Errorf("error in step migration: %w", err)
 		}
 	}
 	fmt.Println("migration successfully")

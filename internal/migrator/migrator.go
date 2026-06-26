@@ -8,9 +8,6 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-var (
-	ErrMigrationLimitReached = fmt.Errorf("migration limit reached")
-)
 
 type Migrator struct {
 	migrate *migrate.Migrate
@@ -23,7 +20,7 @@ func New(dsn string) Migrator {
 		newDSN,
 	)
 	if err != nil {
-		panic(fmt.Errorf("error in migration : %v", err))
+		panic(fmt.Errorf("error in migration : %w", err))
 	}
 
 	return Migrator{

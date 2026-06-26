@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"shop/internal/config"
 	"shop/internal/migrator"
 	"shop/internal/repository/mysql"
@@ -9,19 +8,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-
-
 func main() {
 	// load project configuration
 	config := config.New()
 	config.LoadFromDotEnv(".env")
 	config.LoadFromYml("config.yml")
 	cfg := config.GetConfig()
-	// print configuration
-	fmt.Println(cfg)
-	// mysql connection 
-	_ = mysql.New(cfg.MySQL)
+	// migration 
 	m := migrator.New(cfg.MySQL.GetDSN())
-	m.Step(10)
-
+	if mErr := m.Up(); mErr != nil {
+		panic(mErr)
+	}
+	// mysql connection
+	_ = mysql.New(cfg.MySQL)
 }

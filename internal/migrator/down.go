@@ -1,6 +1,7 @@
 package migrator
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -9,11 +10,11 @@ import (
 func (m Migrator) Down() error {
 	err := m.migrate.Down()
 	if err != nil {
-		if err == migrate.ErrNoChange {
+		if errors.Is(err, migrate.ErrNoChange) {
 			fmt.Println("No migrations to roll back")
 			return nil
 		}
-		return fmt.Errorf("error in down migration : %v", err)
+		return fmt.Errorf("error in down migration : %w", err)
 	}
 	fmt.Println("Migration down completed successfully")
 	return nil
