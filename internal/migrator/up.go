@@ -6,14 +6,15 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 )
 
-func (m Migrator) Up() {
+func (m Migrator) Up() error{
 	err := m.migrate.Up()
 	if err != nil {
 		if err == migrate.ErrNoChange {
 			fmt.Println("No new migrations to apply")
-			return
+			return nil
 		}
-		panic(fmt.Errorf("error in up migration : %v", err))
+		return fmt.Errorf("error in up migration : %v", err)
 	}
 	fmt.Println("Migration up completed successfully")
+	return nil
 }
