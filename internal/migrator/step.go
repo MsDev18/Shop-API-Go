@@ -1,6 +1,7 @@
 package migrator
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -10,17 +11,22 @@ import (
 func (m Migrator) Step(step int) {
 	err := m.migrate.Steps(step)
 	if err != nil {
+		_, isShortLimitErr := err.(migrate.ErrShortLimit)
 		switch {
-		case err == migrate.ErrNoChange:
+		case errors.Is(err, migrate.ErrNoChange):
 			fmt.Println("no change in migration")
 			return
-		case strings.Contains(err.Error(), "limit") && strings.Contains(err.Error(), "short"):
+		// type assertion for check error type
+		case isShortLimitErr:
 			fmt.Println("limit reached")
 			return
 		case strings.Contains(err.Error(), "file does not exist"):
-			fmt.Println("version not exist")
+			fmt.Println("no more migrations to apply")
 			return
+		default:
+			fmt.Println("error in step migration:", err)
+
 		}
-		fmt.Println("error in step migration : ", err)
 	}
+	fmt.Println("migration success")
 }
