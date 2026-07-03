@@ -23,11 +23,11 @@ func (c Config) GetDSN() string {
 	return DSN
 }
 
-type MySQLDB struct {
+type Connection struct {
 	DB *sql.DB
 }
 
-func New(config Config) *MySQLDB {
+func New(config Config) Connection {
 	db, err := sql.Open(MySQLDriver, config.GetDSN())
 	if err != nil {
 		panic(fmt.Errorf("failed to connect to database: %v", err))
@@ -38,7 +38,7 @@ func New(config Config) *MySQLDB {
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
 
-	return &MySQLDB{
+	return Connection{
 		DB: db,
 	}
 }
