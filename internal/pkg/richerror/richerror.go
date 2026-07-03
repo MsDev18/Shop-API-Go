@@ -7,7 +7,7 @@ type RichError struct {
 	message string
 	kind    Kind
 	err     error
-	meta    map[string]string
+	meta    map[string]any
 }
 
 func New() *RichError {
