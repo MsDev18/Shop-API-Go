@@ -5,10 +5,5 @@ import (
 )
 
 func (s Service) SendOtp (req authdto.SendOtpRequest) (authdto.SendOtpResponse, error) {
-	// validation phone number 
-	
-	// check uniqueness phone number 
-
-	// 
 	return authdto.SendOtpResponse{}, nil
 }
