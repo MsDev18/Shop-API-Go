@@ -1,23 +1,28 @@
 package router
 
 import (
+	"shop/internal/api/handler/auth"
 	"shop/internal/api/handler/health"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Router struct {
-	router      *gin.Engine
-	Health health.Handler
+	engine *gin.Engine
+	// handlers statements
+	healthHandler health.Handler
+	authHandler auth.Handler
 }
 
-func New(router *gin.Engine) Router {
+func New(engine *gin.Engine , healthHandler health.Handler , authHandler auth.Handler) Router {
 	return Router{
-		Health: health.New(),
-		router: router,
+		engine: engine,
+		// handlers statements
+		healthHandler: healthHandler,
+		authHandler: authHandler,
 	}
 }
 
-func (r Router) Register () {
-	r.router.GET("/health-check" , r.Health.HealthCheck)
+func (r Router) Register() {
+	r.registerHealthRoute()
 }

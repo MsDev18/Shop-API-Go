@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"shop/internal/api/handler/auth"
+	"shop/internal/api/handler/health"
 	"shop/internal/api/router"
 	"shop/internal/pkg/richerror"
 	"time"
@@ -12,9 +14,11 @@ import (
 )
 
 type Server struct {
-	engine     *gin.Engine
 	config     Config
 	httpServer *http.Server
+	// handler statements
+	HealthHndler health.Handler
+	AuthHandler auth.Handler
 }
 
 type Config struct {
@@ -26,7 +30,7 @@ type Config struct {
 	Env          string `koanf:"env"`
 }
 
-func New(config Config) Server {
+func New(config Config, healthHandler health.Handler, authHandler auth.Handler) Server {
 	// validation env
 	env := Env(config.Env)
 	if !env.IsValid() {
@@ -46,7 +50,7 @@ func New(config Config) Server {
 	// create gin engine
 	engine := gin.Default()
 	// register routes
-	appRouter := router.New(engine)
+	appRouter := router.New(engine, healthHandler, authHandler)
 	appRouter.Register()
 
 	// manually create http server to set timeouts
@@ -60,8 +64,10 @@ func New(config Config) Server {
 
 	return Server{
 		config:     config,
-		engine:     engine,
 		httpServer: httpServer,
+		// handlers statements
+		HealthHndler: healthHandler,
+		AuthHandler: authHandler,
 	}
 }
 
