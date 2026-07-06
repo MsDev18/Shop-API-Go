@@ -1,13 +1,8 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"shop/internal/api/server"
 	"shop/internal/config"
-	authdto "shop/internal/dto/auth"
-	authrepository "shop/internal/repository/mysql/auth"
-	authservice "shop/internal/service/auth"
-	authvalidator "shop/internal/validator/auth"
 	"shop/internal/migrator"
 	"shop/internal/repository/mysql"
 
@@ -26,28 +21,9 @@ func main() {
 		panic(mErr)
 	}
 	// mysql connection
-	mySqlRepo := mysql.New(cfg.MySQL)
-	// auth dependencies
-	authRepo := authrepository.New(mySqlRepo)
-	authValidator := authvalidator.New(authRepo)
-	authService := authservice.New(authRepo)
-	// validation body of request 
-	isValid , err := authValidator.SendOtp(context.Background(),authdto.SendOtpRequest{PhoneNumber: "09351721415"})
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	if !isValid {
-		fmt.Println("not valid")
-		return 
-	}
-	// call the auth service 
-	res, err := authService.SendOtp(authdto.SendOtpRequest{
-		PhoneNumber: "09126359202",
-	})
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(res)
+	_ = mysql.New(cfg.MySQL)
+	
+	// create new http server and run it
+	httpServer := server.New(cfg.Server)
+	httpServer.Run()
 }

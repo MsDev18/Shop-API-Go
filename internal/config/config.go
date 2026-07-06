@@ -1,6 +1,7 @@
 package config
 
 import (
+	"shop/internal/api/server"
 	"shop/internal/repository/mysql"
 
 	"github.com/knadh/koanf/v2"
@@ -11,10 +12,9 @@ type KoanfConfig struct {
 }
 
 type Config struct {
-	MySQL mysql.Config `koanf:"mysql"`
+	MySQL  mysql.Config  `koanf:"mysql"`
+	Server server.Config `koanf:"server"`
 }
-
-
 
 func New() KoanfConfig {
 	k := koanf.New(".")

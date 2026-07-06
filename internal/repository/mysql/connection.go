@@ -11,11 +11,14 @@ const (
 )
 
 type Config struct {
-	Host     string `koanf:"host"`
-	Port     int    `koanf:"port"`
-	Username string `koanf:"username"`
-	Password string `koanf:"password"`
-	Database string `koanf:"database"`
+	Host         string `koanf:"host"`
+	Port         int    `koanf:"port"`
+	Username     string `koanf:"username"`
+	Password     string `koanf:"password"`
+	Database     string `koanf:"database"`
+	MaxOpenConns int    `koanf:"max_open_conns"`
+	MaxLifeTime  int    `koanf:"max_life_time"`
+	MaxIdleConns int    `koanf:"max_idle_conns"`
 }
 
 func (c Config) GetDSN() string {
@@ -34,9 +37,9 @@ func New(config Config) Connection {
 	}
 
 	// See "Important settings" section.
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	db.SetConnMaxLifetime(time.Second * time.Duration(config.MaxLifeTime))
+	db.SetMaxOpenConns(config.MaxOpenConns)
+	db.SetMaxIdleConns(config.MaxIdleConns)
 
 	return Connection{
 		DB: db,
