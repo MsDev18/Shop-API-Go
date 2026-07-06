@@ -11,10 +11,10 @@ import (
 
 func main() {
 	// load project configuration
-	config := config.New()
-	config.LoadFromDotEnv(".env")
-	config.LoadFromYml("config.yml")
-	cfg := config.GetConfig()
+	appConfig := config.New()
+	appConfig.LoadFromDotEnv(".env")
+	appConfig.LoadFromYml("config.yml")
+	cfg := appConfig.GetConfig()
 	// migration 
 	m := migrator.New(cfg.MySQL.GetDSN())
 	if mErr := m.Up(); mErr != nil {
