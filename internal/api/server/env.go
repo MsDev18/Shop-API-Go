@@ -3,8 +3,8 @@ package server
 type Env string
 
 const (
-	EnvDevelopment  Env = "development"
-	EnvProduction Env = "production"
+	EnvDevelopment Env = "development"
+	EnvProduction  Env = "production"
 )
 
 func (e Env) IsValid() bool {

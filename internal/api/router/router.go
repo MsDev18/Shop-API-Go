@@ -6,7 +6,7 @@ import (
 )
 
 type RegisterRoutes interface {
-	SetRoutes(e *gin.Engine)
+	RegisterRoutes(e *gin.Engine)
 }
 type Router struct {
 	engine *gin.Engine
@@ -24,6 +24,6 @@ func New(engine *gin.Engine ,handlers ...RegisterRoutes) Router {
 
 func (r Router) Register() {
 	for _ , handler := range r.handlers {
-		handler.SetRoutes(r.engine)
+		handler.RegisterRoutes(r.engine)
 	}
 }

@@ -15,7 +15,7 @@ type Server struct {
 	config     Config
 	httpServer *http.Server
 	// handler statements
-	Handlers []router.RegisterRoutes
+	handlers []router.RegisterRoutes
 }
 
 type Config struct {
@@ -63,7 +63,7 @@ func New(config Config, handlers ...router.RegisterRoutes) Server {
 		config:     config,
 		httpServer: httpServer,
 		// handlers statements
-		Handlers: handlers,
+		handlers: handlers,
 	}
 }
 
