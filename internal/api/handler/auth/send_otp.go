@@ -1,33 +1,37 @@
 package auth
 
 import (
-	"net/http"
 	authdto "shop/internal/dto/auth"
 	"shop/internal/pkg/response"
+	"shop/internal/pkg/richerror"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h Handler) SendOtp(ctx *gin.Context) {
+	const op = "auth-handler.SendOtp"
 	// bind request body to json
 	var req authdto.SendOtpRequest
-	// in this section 
-	// type error is not richerror 
-	// and if use package response 
-	// return internal srever error 500
+	// in this section
+	// we need to convert error type to richerror
 	if bErr := ctx.ShouldBindJSON(&req); bErr != nil {
-		response.New(ctx).WithErr(http.StatusBadRequest, "can't bind body of request data")
+		response.New(ctx).Error(richerror.New().
+			SetOp(op).
+			SetMsg("can't bind body of request data").
+			SetKind(richerror.KindBadRequestErr).
+			SetErr(bErr),
+		)
 		return
 	}
-	// validate rquest body
+	// validate request body
 	if vErr := h.validator.SendOtp(ctx.Request.Context(), req); vErr != nil {
-		response.New(ctx).WithRichErr(vErr)
+		response.New(ctx).Error(vErr)
 		return
 	}
 	// call service
 	res, sErr := h.service.SendOtp(ctx.Request.Context(), req)
 	if sErr != nil {
-		response.New(ctx).WithRichErr(sErr)
+		response.New(ctx).Error(sErr)
 		return
 	}
 	response.New(ctx).OK("OTP sent successfully", res)
