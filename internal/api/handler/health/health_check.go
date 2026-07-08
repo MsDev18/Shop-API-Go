@@ -1,14 +1,12 @@
 package health
 
 import (
-	"net/http"
+	"shop/internal/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
 
 
 func (h Handler) HealthCheck (ctx *gin.Context) {
-	ctx.JSON(http.StatusOK , gin.H{
-		"message" : "Health-Check ✅",
-	})
+	response.New(ctx).OK("Health Check ✅", nil)
 }

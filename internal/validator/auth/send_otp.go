@@ -18,7 +18,7 @@ const (
 // no - because in business logic
 // if not exist user - create user with base data
 // if exist user - update otp and send
-func (v Validator) SendOtp(ctx context.Context, req authdto.SendOtpRequest) (bool, error) {
+func (v Validator) SendOtp(ctx context.Context, req authdto.SendOtpRequest) (error) {
 	const op = "auth-validator.SendOtp"
 	err := validation.ValidateStructWithContext(ctx, &req,
 		// 1. validation phone number format
@@ -40,17 +40,17 @@ func (v Validator) SendOtp(ctx context.Context, req authdto.SendOtpRequest) (boo
 				meta[key] = value
 			}
 			// return error
-			return false, richerror.New().
+			return richerror.New().
 				SetOp(op).
 				SetMsg("input validation error").
 				SetKind(richerror.KindBadRequestErr).
 				SetMeta(meta)
 		}
-		return false, richerror.New().
+		return richerror.New().
 			SetOp(op).
 			SetMsg("unexpected errror").
 			SetKind(richerror.KindUnexpectedErr).
 			SetErr(err)
 	}
-	return true, nil
+	return  nil
 }
