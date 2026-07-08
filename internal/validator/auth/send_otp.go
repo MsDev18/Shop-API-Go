@@ -21,7 +21,7 @@ const (
 func (v Validator) SendOtp(ctx context.Context, req authdto.SendOtpRequest) (error) {
 	const op = "auth-validator.SendOtp"
 	err := validation.ValidateStructWithContext(ctx, &req,
-		// 1. validation phone number format
+		// validation phone number format
 		validation.Field(&req.PhoneNumber,
 			validation.Required,
 			validation.Match(regexp.MustCompile(IR_MOBILE_REGEX)),
@@ -37,7 +37,7 @@ func (v Validator) SendOtp(ctx context.Context, req authdto.SendOtpRequest) (err
 			// create meta data for richerror package
 			meta := make(map[string]any)
 			for key, value := range validationErr {
-				meta[key] = value
+				meta[key] = value.Error()
 			}
 			// return error
 			return richerror.New().

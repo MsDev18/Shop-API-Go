@@ -26,3 +26,8 @@ func (r *RichError) GetKind() Kind {
 	}
 	return 0
 }
+
+
+func (r *RichError) GetMeta () map[string]any {
+	return r.meta
+}
