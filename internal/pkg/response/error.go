@@ -2,17 +2,19 @@ package response
 
 import (
 	"errors"
-	"net/http"
 	"shop/internal/pkg/mapper"
 	"shop/internal/pkg/richerror"
 )
 
-func (r Responder) Error(err error) {
+func (r *Responder) WithRichErr(err error) {
 	var richErr *richerror.RichError
 	if errors.As(err, &richErr) {
 		statusCode := mapper.KindToHttpStatusCode(richErr.GetKind())
 		r.Send(statusCode, richErr.GetMessage(), nil)
 		return
 	}
-	r.Send(http.StatusInternalServerError, "internal server error", nil)
+}
+
+func (r *Responder) WithErr(code int, message string) {
+	r.Send(code, message, nil)
 }

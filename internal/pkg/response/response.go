@@ -16,13 +16,13 @@ type body struct {
 	Data    any    `json:"data,omitempty"`
 }
 
-func New(ctx *gin.Context) Responder {
-	return Responder{
+func New(ctx *gin.Context) *Responder {
+	return &Responder{
 		ctx: ctx,
 	}
 }
 
-func (r Responder) Send(code int, message string, data any) {
+func (r *Responder) Send(code int, message string, data any) {
 	r.ctx.JSON(code, body{
 		Code:    code,
 		Message: message,
@@ -31,10 +31,10 @@ func (r Responder) Send(code int, message string, data any) {
 }
 
 // helper
-func (r Responder) OK(message string, data any) {
+func (r *Responder) OK(message string, data any) {
 	r.Send(http.StatusOK, message, data)
 }
 // helper
-func (r Responder) Created(message string, data any) {
+func (r *Responder) Created(message string, data any) {
 	r.Send(http.StatusCreated, message, data)
 }
