@@ -1,5 +1,6 @@
 package richerror
 
+
 func (r *RichError) GetMessage() string {
 	if r.message != "" {
 		return r.message
