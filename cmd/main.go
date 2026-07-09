@@ -16,10 +16,7 @@ import (
 
 func main() {
 	// load project configuration
-	appConfig := config.New()
-	appConfig.LoadFromDotEnv(".env")
-	appConfig.LoadFromYml("config.yml")
-	cfg := appConfig.GetConfig()
+	cfg := LoadConfig()
 	// migration
 	m := migrator.New(cfg.MySQL.GetDSN())
 	if mErr := m.Up(); mErr != nil {
@@ -27,14 +24,25 @@ func main() {
 	}
 	// mysql connection
 	mysqlRepo := mysql.New(cfg.MySQL)
-	// health handler
+	// setup project handlers
 	healthHandler := health.New()
-	// setup auth handler
+	authHandler := SetupAuthModule(mysqlRepo)
+	// create new http server and run it
+	httpServer := server.New(cfg.Server, healthHandler, authHandler)
+	httpServer.Run()
+}
+
+func LoadConfig() config.Config {
+	appConfig := config.New()
+	appConfig.LoadFromDotEnv(".env")
+	appConfig.LoadFromYml("config.yml")
+	return appConfig.GetConfig()
+}
+
+func SetupAuthModule(mysqlRepo mysql.Connection) authhandler.Handler {
 	authRepository := authrepository.New(mysqlRepo)
 	authService := authservice.New(authRepository)
 	authValidator := authvalidator.New(authRepository)
 	authHandler := authhandler.New(authRepository, authService, authValidator)
-	// create new http server and run it
-	httpServer := server.New(cfg.Server, healthHandler, authHandler)
-	httpServer.Run()
+	return authHandler
 }
