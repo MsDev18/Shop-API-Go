@@ -1,15 +1,19 @@
 package auth
 
-import "context"
+import (
+	"context"
+	"shop/internal/entity"
+)
 
 type Repository interface {
-	IsPhoneNumberUnique(ctx context.Context, phoneNumber string) (bool, error)
+	GetUserByPhoneNumber(ctx context.Context, phoneNumber string) (entity.User, error)
+	CreateUser(ctx context.Context, user entity.User) (entity.User, error)
+	CreateOtp(ctx context.Context, otp entity.Otp) (entity.Otp, error)
 }
 
 type Service struct {
 	repository Repository
 }
-
 
 func New(repository Repository) Service {
 	return Service{
