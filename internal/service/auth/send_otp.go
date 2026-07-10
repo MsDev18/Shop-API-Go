@@ -2,8 +2,9 @@ package auth
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
-	"math/rand"
+	"math/big"
 	authdto "shop/internal/dto/auth"
 	"shop/internal/entity"
 	"shop/internal/pkg/richerror"
@@ -58,23 +59,33 @@ func (s Service) getOrCreateUser(ctx context.Context, phoneNumber string) (entit
 }
 
 func (s Service) createOrUpdateOtp(ctx context.Context, userId uint) (entity.Otp, error) {
+	const op = "auth-service.createOrUpdateOtp"
 	// generate otp data
+	// 0 to 89_999
+	n, genCodeErr := rand.Int(rand.Reader , big.NewInt(90_000))
+	if genCodeErr != nil {
+		return entity.Otp{}, richerror.New().
+			SetOp(op).
+			SetMsg("can't generate random otp code").
+			SetKind(richerror.KindUnexpectedErr).
+			SetErr(genCodeErr)
+	}
 	otpData := entity.Otp{
 		UserID:    userId,
-		Code:      strconv.Itoa(rand.Intn(90_000) + 10_000),
+		Code:      strconv.Itoa(int(n.Int64()) + 10_000),
 		ExpiresAt: time.Now().Add(time.Second * 120),
 	}
 	// declare vriebale
 	var otp entity.Otp
 	var createOtpErr error
 	// insert otp record in database
-	if otp, createOtpErr = s.repository.CreateOtp(ctx, otpData) ; createOtpErr != nil{
+	if otp, createOtpErr = s.repository.CreateOtp(ctx, otpData); createOtpErr != nil {
 		// if error type is richerror
 		// richerror kind is KindConflictErr update otp record
 		var richErr *richerror.RichError
 		if errors.As(createOtpErr, &richErr) && richErr.GetKind() == richerror.KindConflictErr {
 			// call update method from repository
-			if updateOtpErr := s.repository.UpdateOtp(ctx, otpData) ; updateOtpErr != nil {
+			if updateOtpErr := s.repository.UpdateOtp(ctx, otpData); updateOtpErr != nil {
 				// first step we created otp if come to this line
 				// thats means otp exist beacuse we dont detect error
 				return entity.Otp{}, updateOtpErr
@@ -85,6 +96,6 @@ func (s Service) createOrUpdateOtp(ctx context.Context, userId uint) (entity.Otp
 		// if error type is not richerror or kind is not KindConflictErr
 		return entity.Otp{}, createOtpErr
 	}
-	
+
 	return otp, nil
 }
