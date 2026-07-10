@@ -31,63 +31,60 @@ func (s Service) getOrCreateUser(ctx context.Context, phoneNumber string) (entit
 	const op = "auth-service.getOrCreateUser"
 
 	var user entity.User
-	var err error
+	var getUerErr error
 
-	if user, err = s.repository.GetUserByPhoneNumber(ctx, phoneNumber); err != nil {
-		richErr, ok := err.(*richerror.RichError)
+	if user, getUerErr = s.repository.GetUserByPhoneNumber(ctx, phoneNumber); getUerErr != nil {
 		// if error is not of type richerror
-		// or kind is not NotFoundErr
-		// return unexpected error
-		// help -> in repository package always returned richerror
-		if !ok || richErr.GetKind() != richerror.KindNotFoundErr {
+		// or kind is not NotFoundErr  return unexpected error
+		var richErr *richerror.RichError
+		if !errors.As(getUerErr, &richErr) || richErr.GetKind() != richerror.KindNotFoundErr {
 			return entity.User{}, richerror.New().
 				SetOp(op).
 				SetMsg("unexpected error").
 				SetKind(richerror.KindUnexpectedErr).
-				SetErr(err)
+				SetErr(getUerErr)
 		}
 		// in this section err == notfound
 		// create user with phone number (basic data)
 		u := entity.User{PhoneNumber: phoneNumber}
-		user, err = s.repository.CreateUser(ctx, u)
-		if err != nil {
+		var createUserErr error
+		if user, createUserErr = s.repository.CreateUser(ctx, u); createUserErr != nil {
 			// beacuse in previous step
 			// we returned error as type richerror
-			return entity.User{}, err
+			return entity.User{}, createUserErr
 		}
 	}
 	return user, nil
 }
 
 func (s Service) createOrUpdateOtp(ctx context.Context, userId uint) (entity.Otp, error) {
-	// generate otp data 
+	// generate otp data
 	otpData := entity.Otp{
 		UserID:    userId,
 		Code:      strconv.Itoa(rand.Intn(90_000) + 10_000),
 		ExpiresAt: time.Now().Add(time.Second * 120),
 	}
-	// declare vriebale 
+	// declare vriebale
 	var otp entity.Otp
-	var err error
+	var createOtpErr error
 	// insert otp record in database
-	otp, err = s.repository.CreateOtp(ctx, otpData)
-	if err != nil {
+	if otp, createOtpErr = s.repository.CreateOtp(ctx, otpData) ; createOtpErr != nil{
 		// if error type is richerror
 		// richerror kind is KindConflictErr update otp record
 		var richErr *richerror.RichError
-		if errors.As(err , &richErr) && richErr.GetKind() == richerror.KindConflictErr {
+		if errors.As(createOtpErr, &richErr) && richErr.GetKind() == richerror.KindConflictErr {
 			// call update method from repository
-			err = s.repository.UpdateOtp(ctx, otpData)
-			if err != nil {
+			if updateOtpErr := s.repository.UpdateOtp(ctx, otpData) ; updateOtpErr != nil {
 				// first step we created otp if come to this line
 				// thats means otp exist beacuse we dont detect error
-				return entity.Otp{}, err
+				return entity.Otp{}, updateOtpErr
 			}
 			// operation is successful return empty response
 			return entity.Otp{}, nil
 		}
 		// if error type is not richerror or kind is not KindConflictErr
-		return entity.Otp{}, err
+		return entity.Otp{}, createOtpErr
 	}
+	
 	return otp, nil
 }
