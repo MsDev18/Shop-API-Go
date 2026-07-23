@@ -74,7 +74,7 @@ func (s Service) upsertOtp(ctx context.Context, userId uint) (entity.Otp, error)
 	otpData := entity.Otp{
 		UserID:    userId,
 		Code:      strconv.Itoa(int(n.Int64()) + 10_000),
-		ExpiresAt: time.Now().Add(time.Second * 120),
+		ExpiresAt: time.Now().Add(s.config.OtpCodeDuration),
 	}
 
 	// declare vriebale

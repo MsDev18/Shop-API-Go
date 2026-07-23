@@ -12,14 +12,14 @@ type AccessTokenClaims struct {
 	jwt.RegisteredClaims
 }
 
-func CreateAccessToken(userID uint, secretKey string, duration uint) (string, error) {
+func CreateAccessToken(userID uint, secretKey string, duration time.Duration) (string, error) {
 	const op = "claims.CreateAccessToken"
 
-	expiresAt := jwt.NewNumericDate(time.Now().Add(time.Second * time.Duration(duration)))
+	expiresAt := jwt.NewNumericDate(time.Now().Add(duration))
 	claims := AccessTokenClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: expiresAt,
-			Subject: strconv.Itoa(int(userID)),
+			Subject:   strconv.Itoa(int(userID)),
 		},
 	}
 
@@ -36,4 +36,40 @@ func CreateAccessToken(userID uint, secretKey string, duration uint) (string, er
 	}
 
 	return tokenStr, nil
+}
+
+func ParseAccessToken(tokenStr string, secretKey string) (*AccessTokenClaims, error) {
+	const op = "claims.ParseAccessToken"
+	claims := &AccessTokenClaims{}
+
+	token, err := jwt.ParseWithClaims(
+		tokenStr,
+		claims,
+		func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, richerror.New().
+					SetOp(op).
+					SetMsg("unexpected signing method").
+					SetKind(richerror.KindUnauthorizeErr)
+			}
+			return []byte(secretKey), nil
+		},
+	)
+
+	if err != nil {
+		return nil, richerror.New().
+			SetOp(op).
+			SetMsg("can't parse jwt token").
+			SetKind(richerror.KindUnauthorizeErr).
+			SetErr(err)
+	}
+
+	if !token.Valid {
+		return nil, richerror.New().
+			SetOp(op).
+			SetMsg("token is not valid").
+			SetKind(richerror.KindUnauthorizeErr)
+	}
+
+	return claims, nil
 }

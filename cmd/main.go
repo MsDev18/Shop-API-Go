@@ -26,7 +26,7 @@ func main() {
 	mysqlRepo := mysql.New(cfg.MySQL)
 	// setup project handlers
 	healthHandler := health.New()
-	authHandler := SetupAuthModule(mysqlRepo)
+	authHandler := SetupAuthModule(mysqlRepo, cfg.AuthService)
 	// create new http server and run it
 	httpServer := server.New(cfg.Server, healthHandler, authHandler)
 	httpServer.Run()
@@ -39,9 +39,9 @@ func LoadConfig() config.Config {
 	return appConfig.GetConfig()
 }
 
-func SetupAuthModule(mysqlRepo mysql.Connection) authhandler.Handler {
+func SetupAuthModule(mysqlRepo mysql.Connection, cfg authservice.Config) authhandler.Handler {
 	authRepository := authrepository.New(mysqlRepo)
-	authService := authservice.New(authRepository)
+	authService := authservice.New(authRepository, cfg)
 	authValidator := authvalidator.New(authRepository)
 	authHandler := authhandler.New(authRepository, authService, authValidator)
 	return authHandler

@@ -1,11 +1,20 @@
 mysql:
-  max_life_time:  180
+  max_life_time: 180
   max_open_conns: 10
   max_idle_conns: 10
+
 server:
   host: 0.0.0.0
   port: 3000
-  read_timeout:  10
+  read_timeout: 10
   write_timeout: 10
   idle_timeout: 60
   env: development
+
+auth_service:
+  # 60 * 15 -> 15 Minutes
+  access_token_duration: 15m
+  # 60 * 60 * 24 * 30 -> 30 days 
+  refresh_token_duration: 720h
+  # 60 * 2 -> 2 Minutes 
+  otp_code_duration: 2m

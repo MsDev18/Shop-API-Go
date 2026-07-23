@@ -8,11 +8,6 @@ import (
 	"time"
 )
 
-const (
-	ACCESS_TOKEN_TTL = 60*15
-	REFRESH_TOKEN_TTL = 60*60*24*30
-)
-
 func (s Service) CheckOtp(ctx context.Context, req authdto.CheckOtpRequest) (authdto.CheckOtpResponse, error) {
 	const op = "auth-service.CheckOtp"
 	// 1. get user by phone number
@@ -43,11 +38,11 @@ func (s Service) CheckOtp(ctx context.Context, req authdto.CheckOtpRequest) (aut
 	}
 
 	// 6. generate jwt token
-	accessToken, err := claims.CreateAccessToken(user.ID, "errrrr", ACCESS_TOKEN_TTL)
+	accessToken, err := claims.CreateAccessToken(user.ID, s.config.AccessTokenSecret, s.config.AccessTokenDuration)
 	if err != nil {
 		return authdto.CheckOtpResponse{}, err
 	}
-	refreshToken, err := claims.CreateRefreshToken(user.ID, "errrrr", REFRESH_TOKEN_TTL)
+	refreshToken, err := claims.CreateRefreshToken(user.ID, s.config.RefreshTokenSecret, s.config.RefreshTokenDuration)
 	if err != nil {
 		return authdto.CheckOtpResponse{}, err
 	}

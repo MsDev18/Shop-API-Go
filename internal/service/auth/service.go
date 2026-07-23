@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"shop/internal/entity"
+	"time"
 )
 
 type Repository interface {
@@ -14,10 +15,19 @@ type Repository interface {
 
 type Service struct {
 	repository Repository
+	config     Config
+}
+type Config struct {
+	AccessTokenSecret    string        `koanf:"access_token_secret"`
+	RefreshTokenSecret   string        `koanf:"refresh_token_secret"`
+	AccessTokenDuration  time.Duration `koanf:"access_token_duration"`
+	RefreshTokenDuration time.Duration `koanf:"access_token_duration"`
+	OtpCodeDuration      time.Duration `koanf:"otp_code_duration"`
 }
 
-func New(repository Repository) Service {
+func New(repository Repository, config Config) Service {
 	return Service{
 		repository: repository,
+		config:     config,
 	}
 }
