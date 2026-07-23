@@ -54,3 +54,4 @@ func (v Validator) SendOtp(ctx context.Context, req authdto.SendOtpRequest) (err
 	}
 	return  nil
 }
+// ozzoErrToMeta

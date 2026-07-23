@@ -9,6 +9,7 @@ type Repository interface {
 	GetUserByPhoneNumber(ctx context.Context, phoneNumber string) (entity.User, error)
 	CreateUser(ctx context.Context, user entity.User) (entity.User, error)
 	UpsertOtp(ctx context.Context, otp entity.Otp) (entity.Otp, error)
+	GetOtpByUserID(ctx context.Context, userID uint) (entity.Otp, error)
 }
 
 type Service struct {

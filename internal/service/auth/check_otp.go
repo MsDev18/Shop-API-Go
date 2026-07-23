@@ -1,0 +1,43 @@
+package auth
+
+import (
+	"context"
+	authdto "shop/internal/dto/auth"
+	"shop/internal/pkg/richerror"
+	"time"
+)
+
+func (s Service) CheckOtp(ctx context.Context, req authdto.CheckOtpRequest) (authdto.CheckOtpResponse, error) {
+	const op = "auth-service.CheckOtp"
+	// 1. get user by phone number
+	// 2. check user exist
+	user, getUserErr := s.repository.GetUserByPhoneNumber(ctx, req.PhoneNumber)
+	if getUserErr != nil {
+		return authdto.CheckOtpResponse{}, getUserErr
+	}
+	// 3. if exist user get otp by user id
+	otp, getOtpErr := s.repository.GetOtpByUserID(ctx, user.ID)
+	if getOtpErr != nil {
+		return authdto.CheckOtpResponse{}, getOtpErr
+	}
+
+	// 4. if otp.ExpiresAt < time.now return err
+	if !otp.ExpiresAt.After(time.Now()) {
+		return authdto.CheckOtpResponse{}, richerror.New().
+			SetOp(op).
+			SetMsg("otp code expired").
+			SetKind(richerror.KindUnauthorizeErr)
+	}
+	// 5. check otp.code == req.code
+	if otp.Code != req.Code {
+		return authdto.CheckOtpResponse{}, richerror.New().
+			SetOp(op).
+			SetMsg("invalid otp code").
+			SetKind(richerror.KindUnauthorizeErr)
+	}
+
+	// 6. generate jwt token
+	// (implement me)
+	// 7. return response 
+	return authdto.CheckOtpResponse{}, nil
+}
