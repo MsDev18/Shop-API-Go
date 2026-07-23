@@ -11,8 +11,8 @@ func (r *Responder) Error(err error) {
 	var richErr *richerror.RichError
 	if errors.As(err, &richErr) {
 		statusCode := mapper.KindToHttpStatusCode(richErr.GetKind())
-		r.send(statusCode, richErr.GetMessage(), nil, richErr.GetMeta())
+		r.Send(statusCode, richErr.GetMessage(), nil, richErr.GetMeta())
 		return
 	}
-	r.send(http.StatusInternalServerError, "internal server error", nil, nil)
+	r.Send(http.StatusInternalServerError, "internal server error", nil, nil)
 }

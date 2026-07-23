@@ -1,11 +1,16 @@
 package auth
 
 import (
+	"net/http"
 	authdto "shop/internal/dto/auth"
 	"shop/internal/pkg/response"
 	"shop/internal/pkg/richerror"
 
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	REFRESH_TOKEN_TTL = 60 * 60 *24 *30
 )
 
 func (h Handler) CheckOtp(ctx *gin.Context) {
@@ -31,10 +36,25 @@ func (h Handler) CheckOtp(ctx *gin.Context) {
 	}
 
 	// call service
-	_, serviceErr := h.service.CheckOtp(ctx.Request.Context(), req)
+	res, serviceErr := h.service.CheckOtp(ctx.Request.Context(), req)
 	if serviceErr != nil {
 		response.New(ctx).Error(serviceErr)
 		return
 	}
-	response.New(ctx).OK("login successfully" , nil)
+
+	// set refresh token in cookie 
+	ctx.SetCookie(
+		"refresh-token" , 
+		res.Tokens.RefreshToken,
+		REFRESH_TOKEN_TTL ,
+		"/",
+		"",
+		true,
+		true,
+	)
+
+	// return response 
+	response.New(ctx).Send(http.StatusOK , "login successfully" , map[string]any{
+		"access-token" : res.Tokens.AccessToken ,
+	} , nil)
 }

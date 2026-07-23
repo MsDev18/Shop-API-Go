@@ -5,4 +5,12 @@ type CheckOtpRequest struct {
 	Code        string `json:"code" binding:"required"`
 }
 
-type CheckOtpResponse struct{}
+type CheckOtpResponse struct{
+	Tokens Tokens `json:"tokens"`
+}
+
+
+type Tokens struct {
+	AccessToken  string `json:"access-token"`
+	RefreshToken string `json:"refresh-token"`
+}

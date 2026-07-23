@@ -23,7 +23,7 @@ func New(ctx *gin.Context) *Responder {
 	}
 }
 
-func (r *Responder) send(code int, message string, data any, errors map[string]any) {
+func (r *Responder) Send(code int, message string, data any, errors map[string]any) {
 	r.ctx.JSON(code, body{
 		Code:    code,
 		Message: message,
@@ -34,10 +34,10 @@ func (r *Responder) send(code int, message string, data any, errors map[string]a
 
 // helper
 func (r *Responder) OK(message string, data any) {
-	r.send(http.StatusOK, message, data, nil)
+	r.Send(http.StatusOK, message, data, nil)
 }
 
 // helper
 func (r *Responder) Created(message string, data any) {
-	r.send(http.StatusCreated, message, data , nil)
+	r.Send(http.StatusCreated, message, data , nil)
 }

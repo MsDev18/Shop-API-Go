@@ -3,8 +3,14 @@ package auth
 import (
 	"context"
 	authdto "shop/internal/dto/auth"
+	"shop/internal/pkg/claims"
 	"shop/internal/pkg/richerror"
 	"time"
+)
+
+const (
+	ACCESS_TOKEN_TTL = 60*15
+	REFRESH_TOKEN_TTL = 60*60*24*30
 )
 
 func (s Service) CheckOtp(ctx context.Context, req authdto.CheckOtpRequest) (authdto.CheckOtpResponse, error) {
@@ -37,7 +43,20 @@ func (s Service) CheckOtp(ctx context.Context, req authdto.CheckOtpRequest) (aut
 	}
 
 	// 6. generate jwt token
-	// (implement me)
-	// 7. return response 
-	return authdto.CheckOtpResponse{}, nil
+	accessToken, err := claims.CreateAccessToken(user.ID, "errrrr", ACCESS_TOKEN_TTL)
+	if err != nil {
+		return authdto.CheckOtpResponse{}, err
+	}
+	refreshToken, err := claims.CreateRefreshToken(user.ID, "errrrr", REFRESH_TOKEN_TTL)
+	if err != nil {
+		return authdto.CheckOtpResponse{}, err
+	}
+
+	// 7. return response
+	return authdto.CheckOtpResponse{
+		Tokens: authdto.Tokens{
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
+		},
+	}, nil
 }
