@@ -31,7 +31,7 @@ func main() {
 	healthHandler := health.New()
 	authHandler := SetupAuthModule(mysqlRepo, cfg.AuthService)
 	// create new http server and run it
-	httpServer := server.New(cfg.Server, healthHandler, authHandler)
+	httpServer := server.New(cfg.Server, healthHandler, authHandler , authMiddleware)
 	httpServer.Run()
 }
 

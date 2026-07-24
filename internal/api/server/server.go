@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"shop/internal/api/handler/auth"
 	"shop/internal/api/handler/health"
+	"shop/internal/api/middleware"
 	"shop/internal/api/router"
 	"shop/internal/pkg/richerror"
 	"time"
@@ -27,7 +28,7 @@ type Config struct {
 	Env          string        `koanf:"env"`
 }
 
-func New(config Config, healthHandler health.Handler, authHandler auth.Handler) Server {
+func New(config Config, healthHandler health.Handler, authHandler auth.Handler, authMiddleware middleware.AuthMiddleware) Server {
 	// validation env
 	env := Env(config.Env)
 	if !env.IsValid() {
@@ -47,7 +48,7 @@ func New(config Config, healthHandler health.Handler, authHandler auth.Handler) 
 	// create gin engine
 	engine := gin.Default()
 	// register routes
-	appRouter := router.New(engine, healthHandler, authHandler)
+	appRouter := router.New(engine, healthHandler, authHandler, authMiddleware)
 	appRouter.Register()
 
 	// manually create http server to set timeouts
