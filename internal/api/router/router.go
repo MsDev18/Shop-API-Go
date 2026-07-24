@@ -1,29 +1,30 @@
 package router
 
 import (
+	"shop/internal/api/handler/auth"
+	"shop/internal/api/handler/health"
 
 	"github.com/gin-gonic/gin"
 )
 
-type RegisterRoutes interface {
-	RegisterRoutes(e *gin.Engine)
-}
 type Router struct {
 	engine *gin.Engine
 	// handlers statements
-	handlers []RegisterRoutes
+	healthHandler health.Handler
+	authHandler   auth.Handler
 }
 
-func New(engine *gin.Engine ,handlers ...RegisterRoutes) Router {
+func New(engine *gin.Engine, healthHandler health.Handler, authHandler auth.Handler) Router {
 	return Router{
 		engine: engine,
 		// handlers statements
-		handlers: handlers,
+		healthHandler: healthHandler,
+		authHandler: authHandler,
 	}
 }
 
-func (r Router) Register() {
-	for _ , handler := range r.handlers {
-		handler.RegisterRoutes(r.engine)
-	}
+
+func (r Router) Register () {
+	r.registerHealthRoute()
+	r.registerAuthRoute()
 }
