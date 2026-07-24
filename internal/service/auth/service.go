@@ -21,7 +21,7 @@ type Config struct {
 	AccessTokenSecret    string        `koanf:"access_token_secret"`
 	RefreshTokenSecret   string        `koanf:"refresh_token_secret"`
 	AccessTokenDuration  time.Duration `koanf:"access_token_duration"`
-	RefreshTokenDuration time.Duration `koanf:"access_token_duration"`
+	RefreshTokenDuration time.Duration `koanf:"refresh_token_duration"`
 	OtpCodeDuration      time.Duration `koanf:"otp_code_duration"`
 }
 
