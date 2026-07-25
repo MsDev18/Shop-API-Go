@@ -9,14 +9,16 @@ import (
 )
 
 type RefreshTokenClaims struct {
+	SessionID uint
 	jwt.RegisteredClaims
 }
 
-func CreateRefreshToken(userID uint, secretKey string, duration time.Duration) (string, error) {
+func CreateRefreshToken(userID uint,sessionID uint, secretKey string, duration time.Duration) (string, error) {
 	const op = "claims.CreateRefreshToken"
 
 	expiresAt := jwt.NewNumericDate(time.Now().Add(duration))
 	claims := RefreshTokenClaims{
+		SessionID: sessionID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: expiresAt,
 			Subject: strconv.Itoa(int(userID)),

@@ -9,14 +9,16 @@ import (
 )
 
 type AccessTokenClaims struct {
+	SessionID uint
 	jwt.RegisteredClaims
 }
 
-func CreateAccessToken(userID uint, secretKey string, duration time.Duration) (string, error) {
+func CreateAccessToken(userID uint, sessionID uint, secretKey string, duration time.Duration) (string, error) {
 	const op = "claims.CreateAccessToken"
 
 	expiresAt := jwt.NewNumericDate(time.Now().Add(duration))
 	claims := AccessTokenClaims{
+		SessionID: sessionID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: expiresAt,
 			Subject:   strconv.Itoa(int(userID)),
