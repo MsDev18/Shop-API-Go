@@ -11,6 +11,9 @@ type Repository interface {
 	CreateUser(ctx context.Context, user entity.User) (entity.User, error)
 	UpsertOtp(ctx context.Context, otp entity.Otp) (entity.Otp, error)
 	GetOtpByUserID(ctx context.Context, userID uint) (entity.Otp, error)
+	CreateSession(ctx context.Context, session entity.Session) (entity.Session, error)
+	GetSessionByID(ctx context.Context, sessionID uint) (entity.Session, error)
+	RevokeSession(ctx context.Context, sessionID uint) error
 }
 
 type Service struct {
