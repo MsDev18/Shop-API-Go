@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	authdto "shop/internal/dto/auth"
+	"shop/internal/entity"
 	"shop/internal/pkg/claims"
 	"shop/internal/pkg/richerror"
 	"time"
@@ -37,17 +38,26 @@ func (s Service) CheckOtp(ctx context.Context, req authdto.CheckOtpRequest) (aut
 			SetKind(richerror.KindUnauthorizeErr)
 	}
 
-	// 6. generate jwt token
-	accessToken, err := claims.CreateAccessToken(user.ID, s.config.AccessTokenSecret, s.config.AccessTokenDuration)
+	// 6. create session 
+	sessionData := entity.Session{
+		UserID:    user.ID,
+		ExpiresAt: time.Now().Add(s.config.RefreshTokenDuration),
+	}
+	session, err := s.repository.CreateSession(ctx , sessionData)
 	if err != nil {
 		return authdto.CheckOtpResponse{}, err
 	}
-	refreshToken, err := claims.CreateRefreshToken(user.ID, s.config.RefreshTokenSecret, s.config.RefreshTokenDuration)
+	// 7. generate jwt token
+	accessToken, err := claims.CreateAccessToken(user.ID,session.ID, s.config.AccessTokenSecret, s.config.AccessTokenDuration)
+	if err != nil {
+		return authdto.CheckOtpResponse{}, err
+	}
+	refreshToken, err := claims.CreateRefreshToken(user.ID,session.ID, s.config.RefreshTokenSecret, s.config.RefreshTokenDuration)
 	if err != nil {
 		return authdto.CheckOtpResponse{}, err
 	}
 
-	// 7. return response
+	// 78. return response
 	return authdto.CheckOtpResponse{
 		Tokens: authdto.Tokens{
 			AccessToken:  accessToken,

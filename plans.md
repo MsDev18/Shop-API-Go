@@ -14,13 +14,18 @@ handler ✅
 middleware ✅
 response ✅
 
-solution 1 
-error handling with richerror for example 
-destruct richerror for check bussinus login for err not found 
-
-solution 2
+project bussinus logic convetions ✅
 detect query in database for example run query 
 isExist , err isExistUser := s.repository.ExistUserByPhoneNumber()
 if !isExist {
     // more
 }
+
+
+api -
+|____ auth
+        |_____ /auth/send-otp
+        |_____ /auth/check-otp
+        |_____ /auth/me
+        |_____ /auth/logout
+        |_____ /auth/refresh-token

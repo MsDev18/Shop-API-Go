@@ -25,11 +25,12 @@ func main() {
 	}
 	// mysql connection
 	mysqlRepo := mysql.New(cfg.MySQL)
+	authRepository := authrepository.New(mysqlRepo)
 	// setup middlewares 
-	authMiddleware := middleware.NewAuthMiddileware(cfg.AuthService.AccessTokenSecret)	
+	authMiddleware := middleware.NewAuthMiddileware(cfg.AuthService.AccessTokenSecret, authRepository)	
 	// setup project handlers
 	healthHandler := health.New()
-	authHandler := SetupAuthModule(mysqlRepo, cfg.AuthService)
+	authHandler := SetupAuthModule(authRepository, cfg.AuthService)
 	// create new http server and run it
 	httpServer := server.New(cfg.Server, healthHandler, authHandler , authMiddleware)
 	httpServer.Run()
@@ -42,8 +43,7 @@ func LoadConfig() config.Config {
 	return appConfig.GetConfig()
 }
 
-func SetupAuthModule(mysqlRepo mysql.Connection, cfg authservice.Config) authhandler.Handler {
-	authRepository := authrepository.New(mysqlRepo)
+func SetupAuthModule(authRepository authrepository.Repository, cfg authservice.Config) authhandler.Handler {
 	authService := authservice.New(authRepository, cfg)
 	authValidator := authvalidator.New(authRepository)
 	authHandler := authhandler.New(authRepository, authService, authValidator)
