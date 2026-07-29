@@ -33,7 +33,7 @@ func (h Handler) Logout(ctx *gin.Context) {
 		return
 	}
 
-	if err := h.service.Logout(ctx , sessionID) ; err != nil {
+	if err := h.service.Logout(ctx.Request.Context() , sessionID) ; err != nil {
 		response.New(ctx).Error(err)
 		return
 	}

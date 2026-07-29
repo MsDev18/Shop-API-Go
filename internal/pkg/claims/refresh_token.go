@@ -9,7 +9,7 @@ import (
 )
 
 type RefreshTokenClaims struct {
-	SessionID uint
+	SessionID uint `json:"session-id"`
 	jwt.RegisteredClaims
 }
 

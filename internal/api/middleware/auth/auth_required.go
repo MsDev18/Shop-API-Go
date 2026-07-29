@@ -19,7 +19,7 @@ import (
 
 
 
-func (a Middleware) Authentication() gin.HandlerFunc {
+func (m Middleware) AuthRequired() gin.HandlerFunc {
 	const op = "auth-middleware"
 	return func(ctx *gin.Context) {
 		// get bearer token form autorization
@@ -46,7 +46,7 @@ func (a Middleware) Authentication() gin.HandlerFunc {
 		}
 
 		token := parts[1]
-		accessClaims, err := claims.ParseAccessToken(token, a.accessTokenSecret)
+		accessClaims, err := claims.ParseAccessToken(token, m.accessTokenSecret)
 		if err != nil {
 			response.New(ctx).Error(err)
 			ctx.Abort()
@@ -65,7 +65,7 @@ func (a Middleware) Authentication() gin.HandlerFunc {
 			return
 		}
 
-		session, err := a.repository.GetSessionByID(ctx, accessClaims.SessionID)
+		session, err := m.repository.GetSessionByID(ctx, accessClaims.SessionID)
 		if err != nil {
 			response.New(ctx).Error(err)
 			ctx.Abort()
@@ -82,7 +82,7 @@ func (a Middleware) Authentication() gin.HandlerFunc {
 			return
 		}
 
-		user, err := a.repository.GetUserByID(ctx, session.UserID)
+		user, err := m.repository.GetUserByID(ctx, session.UserID)
 		if err != nil {
 			response.New(ctx).Error(err)
 			ctx.Abort()

@@ -10,7 +10,7 @@ import (
 )
 
 func (s Service) RefreshToken(ctx context.Context, refreshToken string) (authdto.RefreshTokenResponse, error) {
-	const op = "auth-srvice.RefreshToken"
+	const op = "auth-service.RefreshToken"
 
 	refreshClaims, err := claims.ParseRefreshToken(refreshToken, s.config.RefreshTokenSecret)
 	if err != nil {
@@ -34,7 +34,7 @@ func (s Service) RefreshToken(ctx context.Context, refreshToken string) (authdto
 	if session.RevokeAt != nil || !session.ExpiresAt.After(time.Now()) {
 		return authdto.RefreshTokenResponse{}, richerror.New().
 			SetOp(op).
-			SetMsg("session revoke or expired !!").
+			SetMsg("session revoke or expired").
 			SetKind(richerror.KindUnauthorizeErr)
 	}
 
