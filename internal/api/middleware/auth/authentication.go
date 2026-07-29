@@ -1,8 +1,6 @@
-package middleware
+package auth
 
 import (
-	"context"
-	"shop/internal/entity"
 	"shop/internal/pkg/claims"
 	"shop/internal/pkg/response"
 	"shop/internal/pkg/richerror"
@@ -13,28 +11,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	USER_ID_KEY    = "user-id"
-	SESSION_ID_KEY = "session-id"
-)
 
-type AuthMiddleware struct {
-	accessTokenSecret string
-	repository        Repository
-}
 
-type Repository interface {
-	GetSessionByID(ctx context.Context, sessionID uint) (entity.Session, error)
-}
 
-func NewAuthMiddileware(accessTokenSecret string, repository Repository) AuthMiddleware {
-	return AuthMiddleware{
-		accessTokenSecret: accessTokenSecret,
-		repository:        repository,
-	}
-}
 
-func (a AuthMiddleware) AuthRequired() gin.HandlerFunc {
+
+
+
+
+func (a Middleware) Authentication() gin.HandlerFunc {
 	const op = "auth-middleware"
 	return func(ctx *gin.Context) {
 		// get bearer token form autorization
@@ -84,7 +69,7 @@ func (a AuthMiddleware) AuthRequired() gin.HandlerFunc {
 		if err != nil {
 			response.New(ctx).Error(err)
 			ctx.Abort()
-			return 
+			return
 		}
 
 		if session.RevokeAt != nil || !session.ExpiresAt.After(time.Now()) {
@@ -97,9 +82,17 @@ func (a AuthMiddleware) AuthRequired() gin.HandlerFunc {
 			return
 		}
 
+		user, err := a.repository.GetUserByID(ctx, session.UserID)
+		if err != nil {
+			response.New(ctx).Error(err)
+			ctx.Abort()
+			return
+		}
+
 		ctx.Set(SESSION_ID_KEY, session.ID)
 		ctx.Set(USER_ID_KEY, userID)
-
+		ctx.Set(ROLE_KEY, user.Role)
+		
 		ctx.Next()
 	}
 }

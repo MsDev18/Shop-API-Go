@@ -23,7 +23,7 @@ func (h Handler) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	res, err := h.service.RefreshToken(ctx, refreshToken)
+	res, err := h.service.RefreshToken(ctx.Request.Context(), refreshToken)
 	if err != nil {
 		response.New(ctx).Error(err)
 		return

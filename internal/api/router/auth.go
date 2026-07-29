@@ -5,7 +5,7 @@ func (r Router) registerAuthRoute() {
 
 	authG.POST("/send-otp", r.authHandler.SendOtp)
 	authG.POST("/check-otp", r.authHandler.CheckOtp)
-	authG.GET("/me", r.authMiddleware.AuthRequired(), r.authHandler.Me)
-	authG.POST("/logout", r.authMiddleware.AuthRequired(), r.authHandler.Logout)
+	authG.GET("/me", r.authMiddleware.Authentication(), r.authHandler.Me)
+	authG.POST("/logout", r.authMiddleware.Authentication(), r.authHandler.Logout)
 	authG.POST("/refresh-token", r.authHandler.RefreshToken)
 }

@@ -8,26 +8,28 @@ import (
 	"shop/internal/pkg/richerror"
 )
 
-func (r Repository) GetUserByPhoneNumber(ctx context.Context, phoneNumber string) (entity.User, error) {
-	const op = "auth-repository.GetUserByPhoneNumber"
+func (r Repository) GetUserByID(ctx context.Context, userID uint) (entity.User, error) {
+	const op = "auth-repository.GetUserByID"
+
+	const query = `SELECT * FROM user WHERE id = ?`
+
+	row := r.connection.DB.QueryRowContext(ctx, query, userID)
 
 	var user entity.User
-	query := `SELECT * FROM user WHERE phone_number = ?`
-
-	row := r.connection.DB.QueryRowContext(ctx, query, phoneNumber)
 	err := row.Scan(&user.ID, &user.Role, &user.Name, &user.Avatar, &user.PhoneNumber, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return entity.User{}, richerror.New().
 				SetOp(op).
-				SetMsg("not found user with this phone number").
-				SetKind(richerror.KindNotFoundErr)
+				SetMsg("not found user witthis user id").
+				SetKind(richerror.KindNotFoundErr).
+				SetErr(err)
 		}
 		return entity.User{}, richerror.New().
 			SetOp(op).
-			SetMsg("can't scan data from database").
+			SetMsg("unexpected error").
 			SetKind(richerror.KindUnexpectedErr).
 			SetErr(err)
 	}
-	return user, nil
+	return user , nil
 }

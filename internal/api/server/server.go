@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"shop/internal/api/handler/auth"
 	"shop/internal/api/handler/health"
-	"shop/internal/api/middleware"
+	authmiddleware "shop/internal/api/middleware/auth"
 	"shop/internal/api/router"
 	"shop/internal/pkg/richerror"
 	"time"
@@ -28,7 +28,7 @@ type Config struct {
 	Env          string        `koanf:"env"`
 }
 
-func New(config Config, healthHandler health.Handler, authHandler auth.Handler, authMiddleware middleware.AuthMiddleware) Server {
+func New(config Config, healthHandler health.Handler, authHandler auth.Handler, authMiddleware authmiddleware.Middleware) Server {
 	// validation env
 	env := Env(config.Env)
 	if !env.IsValid() {

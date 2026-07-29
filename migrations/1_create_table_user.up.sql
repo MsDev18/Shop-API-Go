@@ -1,5 +1,6 @@
 CREATE TABLE `user` (
     `id` INT PRIMARY KEY NOT NULL UNIQUE AUTO_INCREMENT,
+    `role` ENUM("ADMIN","USER") DEFAULT "USER" NOT NULL,
     `name` VARCHAR(255) ,
     `avatar` VARCHAR(255) ,
     `phone_number` VARCHAR(12) NOT NULL UNIQUE,

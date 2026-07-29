@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"shop/internal/api/middleware"
+	authmiddleware "shop/internal/api/middleware/auth"
 	"shop/internal/pkg/response"
 	"shop/internal/pkg/richerror"
 
@@ -11,7 +11,7 @@ import (
 func (h Handler) Me (ctx *gin.Context) {
 	const op = "auth-handler.Me"
 
-	value , exists := ctx.Get(middleware.USER_ID_KEY)
+	value , exists := ctx.Get(authmiddleware.USER_ID_KEY)
 	if !exists {
 		response.New(ctx).Error(richerror.New().
 			SetOp(op).

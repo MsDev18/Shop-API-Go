@@ -3,7 +3,7 @@ package main
 import (
 	authhandler "shop/internal/api/handler/auth"
 	"shop/internal/api/handler/health"
-	"shop/internal/api/middleware"
+	authmiddleware "shop/internal/api/middleware/auth"
 	"shop/internal/api/server"
 	"shop/internal/config"
 	"shop/internal/migrator"
@@ -27,7 +27,7 @@ func main() {
 	mysqlRepo := mysql.New(cfg.MySQL)
 	authRepository := authrepository.New(mysqlRepo)
 	// setup middlewares 
-	authMiddleware := middleware.NewAuthMiddileware(cfg.AuthService.AccessTokenSecret, authRepository)	
+	authMiddleware := authmiddleware.New(cfg.AuthService.AccessTokenSecret, authRepository)	
 	// setup project handlers
 	healthHandler := health.New()
 	authHandler := SetupAuthModule(authRepository, cfg.AuthService)
