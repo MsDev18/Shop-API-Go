@@ -1,8 +1,9 @@
-package auth
+package user
 
 type Validator struct {
+
 }
 
-func New() Validator {
+func New () Validator {
 	return Validator{}
 }

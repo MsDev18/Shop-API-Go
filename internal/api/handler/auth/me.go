@@ -21,7 +21,7 @@ func (h Handler) Me (ctx *gin.Context) {
 		return
 	}
 	
-	userID, ok := value.(uint64)
+	userID, ok := value.(uint)
 	if !ok {
 		response.New(ctx).Error(richerror.New().
 			SetOp(op).

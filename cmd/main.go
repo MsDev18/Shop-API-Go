@@ -3,14 +3,18 @@ package main
 import (
 	authhandler "shop/internal/api/handler/auth"
 	"shop/internal/api/handler/health"
+	userhandler "shop/internal/api/handler/user"
 	authmiddleware "shop/internal/api/middleware/auth"
 	"shop/internal/api/server"
 	"shop/internal/config"
 	"shop/internal/migrator"
 	"shop/internal/repository/mysql"
 	authrepository "shop/internal/repository/mysql/auth"
+	userrepository "shop/internal/repository/mysql/user"
 	authservice "shop/internal/service/auth"
+	userservice "shop/internal/service/user"
 	authvalidator "shop/internal/validator/auth"
+	uservalidator "shop/internal/validator/user"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -26,13 +30,15 @@ func main() {
 	// mysql connection
 	mysqlRepo := mysql.New(cfg.MySQL)
 	authRepository := authrepository.New(mysqlRepo)
-	// setup middlewares 
-	authMiddleware := authmiddleware.New(cfg.AuthService.AccessTokenSecret, authRepository)	
+	userRepository := userrepository.New(mysqlRepo)
+	// setup middlewares
+	authMiddleware := authmiddleware.New(cfg.AuthService.AccessTokenSecret, authRepository)
 	// setup project handlers
 	healthHandler := health.New()
 	authHandler := SetupAuthModule(authRepository, cfg.AuthService)
+	userHandler := SetupUserModule(userRepository)
 	// create new http server and run it
-	httpServer := server.New(cfg.Server, healthHandler, authHandler , authMiddleware)
+	httpServer := server.New(cfg.Server, healthHandler, authHandler, userHandler, authMiddleware)
 	httpServer.Run()
 }
 
@@ -45,7 +51,14 @@ func LoadConfig() config.Config {
 
 func SetupAuthModule(authRepository authrepository.Repository, cfg authservice.Config) authhandler.Handler {
 	authService := authservice.New(authRepository, cfg)
-	authValidator := authvalidator.New(authRepository)
+	authValidator := authvalidator.New()
 	authHandler := authhandler.New(authRepository, authService, authValidator)
 	return authHandler
+}
+
+func SetupUserModule(userRepository userrepository.Repository) userhandler.Handler {
+	userService := userservice.New(userRepository)
+	userValidator := uservalidator.New()
+	userHandler := userhandler.New(userRepository, userService, userValidator)
+	return userHandler
 }

@@ -12,13 +12,6 @@ import (
 )
 
 
-
-
-
-
-
-
-
 func (m Middleware) AuthRequired() gin.HandlerFunc {
 	const op = "auth-middleware"
 	return func(ctx *gin.Context) {
@@ -90,7 +83,7 @@ func (m Middleware) AuthRequired() gin.HandlerFunc {
 		}
 
 		ctx.Set(SESSION_ID_KEY, session.ID)
-		ctx.Set(USER_ID_KEY, userID)
+		ctx.Set(USER_ID_KEY, uint(userID))
 		ctx.Set(ROLE_KEY, user.Role)
 		
 		ctx.Next()
