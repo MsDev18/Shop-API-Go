@@ -34,7 +34,7 @@ func (s Service) ChangePassword(ctx context.Context, userID uint, req userdto.Ch
 		Password: hashPass,
 	}
 	// save in repository
-	err := s.repository.UpdateProfile(ctx , user)
+	err := s.repository.UpdatePassword(ctx , user)
 	if err != nil {
 		return err
 	}

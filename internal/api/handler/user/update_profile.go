@@ -34,11 +34,15 @@ func (h Handler) UpdateProfile(ctx *gin.Context) {
 		return
 	}
 
-	name := ctx.PostForm("name")
+	name , exists := ctx.GetPostForm("name")
+	var namePtr *string
+	if exists {
+		namePtr = &name
+	}
 	// beacuse this field is optional, so we don't need to check error
 	avatar, _ := ctx.FormFile("avatar")
 	req := userdto.UpdateProfileRequest{
-		Name:   name,
+		Name:   namePtr,
 		Avatar: avatar,
 	}
 

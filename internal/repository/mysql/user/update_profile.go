@@ -4,16 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"shop/internal/entity"
 	"shop/internal/pkg/richerror"
 )
 
-func (r Repository) UpdateProfile(ctx context.Context, user entity.User) error {
+func (r Repository) UpdateProfile(ctx context.Context, userID uint, name *string, avatar *string) error {
 	const op = "user-repository.UpdateProfile"
 
-	const query = `UPDATE user SET name = ?, avatar = ?, password = ? WHERE id = ?`
+	const query = `UPDATE user SET name = COALESCE(?, name), avatar = COALESCE(?, avatar) WHERE id = ?`
 
-	_, err := r.connection.DB.ExecContext(ctx, query, user.Name, user.Avatar, user.Password, user.ID)
+	_, err := r.connection.DB.ExecContext(ctx, query, name, avatar, userID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return richerror.New().

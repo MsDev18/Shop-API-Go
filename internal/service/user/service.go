@@ -13,12 +13,13 @@ type Service struct {
 
 type Repository interface {
 	GetUserByID(ctx context.Context, userID uint) (entity.User, error)
-	UpdateProfile(ctx context.Context, user entity.User) error
+	UpdateProfile(ctx context.Context, userID uint, name *string, avatar *string) error
+	UpdatePassword(ctx context.Context ,user entity.User) error
 }
 
 func New(repository Repository, imageProcessor imageprocessor.Processor) Service {
 	return Service{
-		repository:     repository,
+		repository:     repository,	
 		imageProcessor: imageProcessor,
 	}
 }
