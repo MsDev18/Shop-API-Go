@@ -8,6 +8,7 @@ import (
 	"shop/internal/api/server"
 	"shop/internal/config"
 	"shop/internal/migrator"
+	"shop/internal/pkg/imageprocessor"
 	"shop/internal/repository/mysql"
 	authrepository "shop/internal/repository/mysql/auth"
 	userrepository "shop/internal/repository/mysql/user"
@@ -33,10 +34,12 @@ func main() {
 	userRepository := userrepository.New(mysqlRepo)
 	// setup middlewares
 	authMiddleware := authmiddleware.New(cfg.AuthService.AccessTokenSecret, authRepository)
+	// setup image processor
+	imageProcessor := imageprocessor.New(cfg.Upload)
 	// setup project handlers
 	healthHandler := health.New()
 	authHandler := SetupAuthModule(authRepository, cfg.AuthService)
-	userHandler := SetupUserModule(userRepository)
+	userHandler := SetupUserModule(userRepository, imageProcessor)
 	// create new http server and run it
 	httpServer := server.New(cfg.Server, healthHandler, authHandler, userHandler, authMiddleware)
 	httpServer.Run()
@@ -56,8 +59,8 @@ func SetupAuthModule(authRepository authrepository.Repository, cfg authservice.C
 	return authHandler
 }
 
-func SetupUserModule(userRepository userrepository.Repository) userhandler.Handler {
-	userService := userservice.New(userRepository)
+func SetupUserModule(userRepository userrepository.Repository, imageProcessor imageprocessor.Processor) userhandler.Handler {
+	userService := userservice.New(userRepository, imageProcessor)
 	userValidator := uservalidator.New()
 	userHandler := userhandler.New(userRepository, userService, userValidator)
 	return userHandler
