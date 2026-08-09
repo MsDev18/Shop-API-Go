@@ -2,6 +2,7 @@ package config
 
 import (
 	"shop/internal/api/server"
+	"shop/internal/pkg/imageprocessor"
 	"shop/internal/repository/mysql"
 	authservice "shop/internal/service/auth"
 
@@ -13,9 +14,10 @@ type KoanfConfig struct {
 }
 
 type Config struct {
-	MySQL       mysql.Config       `koanf:"mysql"`
-	Server      server.Config      `koanf:"server"`
-	AuthService authservice.Config `koanf:"auth_service"`
+	MySQL       mysql.Config          `koanf:"mysql"`
+	Server      server.Config         `koanf:"server"`
+	AuthService authservice.Config    `koanf:"auth_service"`
+	Upload      imageprocessor.Config `koanf:"upload"`
 }
 
 func New() KoanfConfig {

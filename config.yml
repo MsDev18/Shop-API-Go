@@ -18,3 +18,8 @@ auth_service:
   refresh_token_duration: 720h
   # 60 * 2 -> 2 Minutes 
   otp_code_duration: 2m
+
+upload:
+  dir: avatars
+  max_size_mb: 5
+  max_dimension: 512
