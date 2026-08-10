@@ -34,4 +34,5 @@ func (r Router) Register () {
 	r.registerHealthRoute()
 	r.registerAuthRoute()
 	r.registerUserRoute()
+	r.registerStaticRoute()
 }
