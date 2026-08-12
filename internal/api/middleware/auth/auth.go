@@ -21,7 +21,7 @@ type Middleware struct {
 	repository        Repository
 }
 
-func New(accessTokenSecret string, repository Repository) Middleware {
+func New(repository Repository, accessTokenSecret string) Middleware {
 	return Middleware{
 		accessTokenSecret: accessTokenSecret,
 		repository:        repository,
