@@ -23,9 +23,19 @@ if !isExist {
 
 
 api -
+|____ health
+|        |_____ GET /health-check
+|
 |____ auth
-        |_____ /auth/send-otp
-        |_____ /auth/check-otp
-        |_____ /auth/me
-        |_____ /auth/logout
-        |_____ /auth/refresh-token
+|        |_____ POST /auth/send-otp
+|        |_____ POST /auth/check-otp
+|        |_____ GET /auth/me
+|        |_____ POST /auth/logout
+|        |_____ POST /auth/refresh-token
+|
+|____ user
+|        |_____ POST /user/profile
+|        |_____ PATCH /user/update-profile
+|        |_____ PATCH /user/change-password
+|
+|____ category

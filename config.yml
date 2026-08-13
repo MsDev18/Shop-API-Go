@@ -20,6 +20,4 @@ auth_service:
   otp_code_duration: 2m
 
 upload:
-  dir: avatars
-  max_size_mb: 5
   max_dimension: 512

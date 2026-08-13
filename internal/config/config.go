@@ -17,7 +17,7 @@ type Config struct {
 	MySQL       mysql.Config          `koanf:"mysql"`
 	Server      server.Config         `koanf:"server"`
 	AuthService authservice.Config    `koanf:"auth_service"`
-	Upload      imageprocessor.Config `koanf:"upload"`
+	Upload imageprocessor.Config `koanf:"upload"`
 }
 
 func New() KoanfConfig {

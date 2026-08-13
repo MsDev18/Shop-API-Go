@@ -10,8 +10,7 @@ func (s Service) UpdateProfile(ctx context.Context, userID uint, req userdto.Upd
 	// 1. process image and upload in server
 	var avatarURI *string
 	if req.Avatar != nil {
-		var processImageErr error
-		uri, processImageErr := s.imageProcessor.ProcessAvatar(req.Avatar, userID)
+		uri, processImageErr := s.imageProcessor.Process(ctx , req.Avatar)
 		if processImageErr != nil {
 			return processImageErr
 		}
