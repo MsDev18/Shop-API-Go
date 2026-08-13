@@ -1,6 +1,10 @@
 package category
 
-import "shop/internal/pkg/imageprocessor"
+import (
+	"context"
+	"shop/internal/entity"
+	"shop/internal/pkg/imageprocessor"
+)
 
 type Service struct {
 	repository     Repository
@@ -8,11 +12,14 @@ type Service struct {
 }
 
 type Repository interface {
+	IsUniqueSlug(ctx context.Context, slug string) (bool, error)
+	Create(ctx context.Context, category entity.Category) (entity.Category, error)
+	GetByID(ctx context.Context, id uint) (entity.Category, error)
 }
 
 func New(repository Repository, imageprocessor imageprocessor.Processor) Service {
 	return Service{
-		repository: repository,
+		repository:     repository,
 		imageProcessor: imageprocessor,
 	}
 }

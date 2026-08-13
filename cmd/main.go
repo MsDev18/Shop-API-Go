@@ -26,6 +26,13 @@ func main() {
 	userHandler := SetupUserModule(mysqlRepo, config.Upload)
 	categoryHandler := SetupCategoryModule(mysqlRepo , config.Upload)
 	// create new http server and run it
-	httpServer := server.New(config.Server, healthHandler, authHandler, userHandler, categoryHandler, authMiddleware)
+	httpServer := server.New(
+		config.Server, 
+		healthHandler, 
+		authHandler, 
+		userHandler, 
+		categoryHandler, 
+		authMiddleware,
+	)
 	httpServer.Run()
 }
