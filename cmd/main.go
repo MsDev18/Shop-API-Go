@@ -4,8 +4,6 @@ import (
 	"shop/internal/api/handler/health"
 	"shop/internal/api/server"
 	"shop/internal/migrator"
-	"shop/internal/pkg/imageprocessor"
-	"shop/internal/pkg/imageprocessor/localstorage"
 	"shop/internal/repository/mysql"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -21,14 +19,12 @@ func main() {
 	}
 	// mysql pure connection
 	mysqlRepo := mysql.New(config.MySQL)
-	// setup image processor
-	avatarStorage := localstorage.New("avatars")
-	imageProcessor := imageprocessor.New(config.Upload, avatarStorage)
+
 	// setup project handlers
 	healthHandler := health.New()
 	authHandler, authMiddleware := SetupAuthModule(mysqlRepo, config.AuthService)
-	userHandler := SetupUserModule(mysqlRepo, imageProcessor)
-	categoryHandler := SetupCategoryModule(mysqlRepo)
+	userHandler := SetupUserModule(mysqlRepo, config.Upload)
+	categoryHandler := SetupCategoryModule(mysqlRepo , config.Upload)
 	// create new http server and run it
 	httpServer := server.New(config.Server, healthHandler, authHandler, userHandler, categoryHandler, authMiddleware)
 	httpServer.Run()
