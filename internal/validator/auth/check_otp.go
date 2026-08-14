@@ -29,7 +29,8 @@ func (v Validator) CheckOtp(ctx context.Context, req authdto.CheckOtpRequest) er
 				SetOp(op).
 				SetMsg("inputl validation error").
 				SetKind(richerror.KindBadRequestErr).
-				SetErr(err)
+				SetErr(err).
+				SetMeta(meta)
 		}
 		return richerror.New().
 			SetOp(op).

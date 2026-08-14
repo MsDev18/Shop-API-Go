@@ -1,17 +1,17 @@
 package category
 
 import (
-	categoryservice "shop/internal/service/category"
-	categoryvalidator "shop/internal/validator/category"
+	service "shop/internal/service/category"
+	validator "shop/internal/validator/category"
 
 )
 
 type Handler struct {
-	service categoryservice.Service
-	validator categoryvalidator.Validator
+	service service.Service
+	validator validator.Validator
 }
 
-func New (service categoryservice.Service, validator categoryvalidator.Validator) Handler {
+func New (service service.Service, validator validator.Validator) Handler {
 	return Handler{
 		service: service,
 		validator: validator,
