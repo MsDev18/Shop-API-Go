@@ -8,8 +8,8 @@ import (
 	"shop/internal/pkg/richerror"
 )
 
-func (r Repository) GetByID(ctx context.Context, id uint) (entity.Category, error) {
-	const op = "category-repository.GetByID"
+func (r Repository) GetOneByID(ctx context.Context, id uint) (entity.Category, error) {
+	const op = "category-repository.GetOneByID"
 
 	const query = `SELECT * FROM category WHERE id = ? AND deleted_at IS NULL`
 

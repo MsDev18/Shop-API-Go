@@ -11,7 +11,7 @@ func (s Service) Create(ctx context.Context, req dto.CreateRequest) (dto.CreateR
 	const op = "category-service.Create"
 	// 1. check parnet
 	if req.ParentID != nil {
-		parent, err := s.repository.GetByID(ctx, *req.ParentID)
+		parent, err := s.repository.GetOneByID(ctx, *req.ParentID)
 		if err != nil {
 			return dto.CreateResponse{}, err
 		}
