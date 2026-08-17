@@ -218,6 +218,8 @@ All responses use the envelope shown in [Architecture](#architecture). Endpoints
 | POST | `/category` | 🔒👑 Create a category (root or one level of children) |
 | GET | `/category` | List all categories as a nested tree |
 | GET | `/category/:slug` | Get a single category by slug, including its children if it's a root category |
+| PATCH | `/category/:slug` | 🔒👑 Partially update a category (title/slug/image — only fields provided are changed) |
+| DELETE | `/category/:slug` | 🔒👑 Soft-delete a category (rejected if a root category still has children) |
 
 ### Static files
 
