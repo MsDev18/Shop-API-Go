@@ -19,6 +19,7 @@ type Repository interface {
 	GetOneBySlug(ctx context.Context, slug string) (entity.Category, error)
 	GetChildrenByParentID(ctx context.Context, parentID uint) ([]entity.Category, error)
 	UpdateByID(ctx context.Context, id uint, title, slug, image *string) error
+	DeleteByID(ctx context.Context, id uint) error
 }
 
 func New(repository Repository, imageprocessor imageprocessor.Processor) Service {
