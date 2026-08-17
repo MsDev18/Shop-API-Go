@@ -7,7 +7,7 @@ import (
 )
 
 func (h Handler) Delete(ctx *gin.Context) {
-	const op = "category-handler.delete"
+	const op = "category-handler.Delete"
 
 	slug := ctx.Param("slug")
 

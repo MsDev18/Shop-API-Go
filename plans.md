@@ -26,8 +26,8 @@ api -
 |        |_____ POST /category ✅ (admin)
 |        |_____ GET /category ✅
 |        |_____ GET /category/:slug ✅
-|        |_____ PATCH /category/:slug (admin)
-|        |_____ DELETE /category/:slug (admin)
+|        |_____ PATCH /category/:slug ✅ (admin)
+|        |_____ DELETE /category/:slug ✅ (admin)
 |
 |____ product
 |        |_____ POST /product (admin)
