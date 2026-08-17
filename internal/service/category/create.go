@@ -23,11 +23,11 @@ func (s Service) Create(ctx context.Context, req dto.CreateRequest) (dto.CreateR
 		}
 	}
 	// 2. check uniqueness slug
-	isUnique, err := s.repository.IsUniqueSlug(ctx, req.Slug)
+	isExists, err := s.repository.IsExistsSlug(ctx, req.Slug)
 	if err != nil {
 		return dto.CreateResponse{}, err
 	}
-	if !isUnique {
+	if isExists {
 		return dto.CreateResponse{}, richerror.New().
 			SetOp(op).
 			SetMsg("this slug already exists").

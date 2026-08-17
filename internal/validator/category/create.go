@@ -6,14 +6,11 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"regexp"
 	categorydto "shop/internal/dto/category"
 	"shop/internal/pkg/richerror"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
-
-var slugRegex = regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
 
 func (v Validator) Create(ctx context.Context, req categorydto.CreateRequest) error {
 	const op = "category-validator.Create"
@@ -28,8 +25,8 @@ func (v Validator) Create(ctx context.Context, req categorydto.CreateRequest) er
 	err := validation.ValidateStructWithContext(
 		ctx,
 		&req,
-		validation.Field(&req.Title, validation.Required, validation.Length(3, 50)),
-		validation.Field(&req.Slug, validation.Required, validation.Length(3, 255), validation.Match(slugRegex)),
+		validation.Field(&req.Title, validation.Required, validation.Length(TITLE_MIN_LENGTH, TITLE_MAX_LENGTH)),
+		validation.Field(&req.Slug, validation.Required, validation.Length(SLUG_MIN_LENGTH, SLUG_MAX_LENGTH), validation.Match(SLUG_REGEX)),
 		validation.Field(&req.Image, validation.By(v.validateImage)),
 	)
 

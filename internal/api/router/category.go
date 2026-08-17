@@ -7,4 +7,5 @@ func (r Router) registerCategoryRoute () {
 	categoryG.POST("" , r.authMiddleware.AuthRequired(), r.authMiddleware.RoleRequired(entity.AdminRole) , r.categoryHandler.Create)
 	categoryG.GET("" , r.categoryHandler.GetAll)
 	categoryG.GET("/:slug" , r.categoryHandler.GetOne)
+	categoryG.PATCH("/:slug",r.authMiddleware.AuthRequired(), r.authMiddleware.RoleRequired(entity.AdminRole) , r.categoryHandler.Update)
 }
