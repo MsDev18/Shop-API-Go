@@ -24,14 +24,18 @@ func main() {
 	healthHandler := health.New()
 	authHandler, authMiddleware := SetupAuthModule(mysqlRepo, config.AuthService)
 	userHandler := SetupUserModule(mysqlRepo, config.Upload)
-	categoryHandler := SetupCategoryModule(mysqlRepo , config.Upload)
+	categoryHandler := SetupCategoryModule(mysqlRepo, config.Upload)
+	provinceHandler := setupProvinceModule(mysqlRepo)
+	addressHandler := setupAddressModule(mysqlRepo)
 	// create new http server and run it
 	httpServer := server.New(
-		config.Server, 
-		healthHandler, 
-		authHandler, 
-		userHandler, 
-		categoryHandler, 
+		config.Server,
+		healthHandler,
+		authHandler,
+		userHandler,
+		categoryHandler,
+		provinceHandler,
+		addressHandler,
 		authMiddleware,
 	)
 	httpServer.Run()
