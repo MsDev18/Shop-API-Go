@@ -221,6 +221,13 @@ All responses use the envelope shown in [Architecture](#architecture). Endpoints
 | PATCH | `/category/:slug` | 🔒👑 Partially update a category (title/slug/image — only fields provided are changed) |
 | DELETE | `/category/:slug` | 🔒👑 Soft-delete a category (rejected if a root category still has children) |
 
+### Province
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/province` | List all provinces |
+| GET | `/province/:id` | Get a single province by id |
+
 ### Static files
 
 | Method | Path | Description |

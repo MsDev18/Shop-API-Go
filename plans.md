@@ -14,13 +14,16 @@ api -
 |        |_____ PATCH /user/update-profile ✅
 |        |_____ PATCH /user/change-password ✅
 |
+|____ province
+|        |_____ GET /province ✅
+|        |_____ GET /province/:id ✅
+|
 |____ address
 |        |_____ POST /address
 |        |_____ GET /address
 |        |_____ GET /address/:id
 |        |_____ PATCH /address/:id
 |        |_____ DELETE /address/:id
-|        |_____ PATCH /address/:id/default
 |
 |____ category
 |        |_____ POST /category ✅ (admin)
