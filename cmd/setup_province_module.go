@@ -7,8 +7,8 @@ import (
 	service "shop/internal/service/province"
 )
 
-func setupProvinceModule(mysqlRepo mysql.Connection) handler.Handler {
+func setupProvinceModule(mysqlRepo mysql.Connection) (handler.Handler, service.Service) {
 	repository := repository.New(mysqlRepo)
 	service := service.New(repository)
-	return handler.New(service)
+	return handler.New(service) , service
 }
