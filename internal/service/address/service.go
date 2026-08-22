@@ -7,18 +7,19 @@ import (
 )
 
 type Service struct {
-	repository     Repository
+	repository      Repository
 	provinceService province.Service
 }
 
 type Repository interface {
 	Create(ctx context.Context, address entity.Address) (entity.Address, error)
 	GetAll(ctx context.Context, userID uint) ([]entity.Address, error)
+	GetOne(ctx context.Context, userID uint, addressID uint) (entity.Address, error)
 }
 
 func New(repository Repository, provinceService province.Service) Service {
 	return Service{
-		repository:     repository,
+		repository:      repository,
 		provinceService: provinceService,
 	}
 }
