@@ -1,5 +1,7 @@
 package router
 
 func (r Router) registerAddressRoute() {
-	r.engine.POST("", r.authMiddleware.AuthRequired(), r.addressHandler.Create)
+	addressG := r.engine.Group("/address")
+	addressG.POST("", r.authMiddleware.AuthRequired(), r.addressHandler.Create)
+	addressG.GET("" , r.authMiddleware.AuthRequired(), r.addressHandler.GetAll)
 }
