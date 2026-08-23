@@ -19,11 +19,11 @@ api -
 |        |_____ GET /province/:id ✅
 |
 |____ address
-|        |_____ POST /address
-|        |_____ GET /address
-|        |_____ GET /address/:id
-|        |_____ PATCH /address/:id
-|        |_____ DELETE /address/:id
+|        |_____ POST /address ✅
+|        |_____ GET /address ✅
+|        |_____ GET /address/:id ✅
+|        |_____ PATCH /address/:id ✅
+|        |_____ DELETE /address/:id ✅
 |
 |____ category
 |        |_____ POST /category ✅ (admin)
