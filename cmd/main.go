@@ -27,6 +27,7 @@ func main() {
 	categoryHandler := SetupCategoryModule(mysqlRepo, config.Upload)
 	provinceHandler, provinceService := setupProvinceModule(mysqlRepo)
 	addressHandler := setupAddressModule(mysqlRepo, provinceService)
+	productHandler := setupProductModule(config.Upload , mysqlRepo)
 	// create new http server and run it
 	httpServer := server.New(
 		config.Server,
@@ -36,6 +37,7 @@ func main() {
 		categoryHandler,
 		provinceHandler,
 		addressHandler,
+		productHandler,
 		authMiddleware,
 	)
 	httpServer.Run()
