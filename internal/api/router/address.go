@@ -7,5 +7,5 @@ func (r Router) registerAddressRoute() {
 	addressG.GET("", r.authMiddleware.AuthRequired(), r.addressHandler.GetAll)
 	addressG.GET("/:id", r.authMiddleware.AuthRequired(), r.addressHandler.GetOne)
 	addressG.DELETE("/:id", r.authMiddleware.AuthRequired(), r.addressHandler.Delete)
-
+	addressG.PATCH("/:id", r.authMiddleware.AuthRequired(), r.addressHandler.Update)
 }
