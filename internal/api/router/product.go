@@ -1,5 +1,9 @@
 package router
 
+import "shop/internal/entity"
+
 func (r Router) registerProductRoute() {
-	_ = r.engine.Group("/product")
+	productG := r.engine.Group("/product")
+
+	productG.POST("", r.authMiddleware.AuthRequired(), r.authMiddleware.RoleRequired(entity.AdminRole), r.productHandler.Create)
 }
