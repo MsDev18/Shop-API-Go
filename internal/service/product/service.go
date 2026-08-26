@@ -1,19 +1,28 @@
 package product
 
-import "shop/internal/pkg/imageprocessor"
+import (
+	"context"
+	"shop/internal/entity"
+	"shop/internal/pkg/imageprocessor"
+	"shop/internal/service/category"
+)
 
 type Service struct {
-	repository Repository
-	imageProcessor imageprocessor.Processor
+	repository      Repository
+	imageProcessor  imageprocessor.Processor
+	categoryService category.Service
 }
 
 type Repository interface {
-
+	Create(ctx context.Context, product entity.Product, imagePaths []string) (entity.Product, error)
+	GetBySlug(ctx context.Context, slug string) (entity.Product, []entity.ProductImage, error)
+	GetProductImage(ctx context.Context, productID uint) ([]entity.ProductImage, error)
 }
 
-func New(repository Repository, imageProcessor imageprocessor.Processor) Service {
+func New(repository Repository, categoryService category.Service, imageProcessor imageprocessor.Processor) Service {
 	return Service{
-		repository: repository,
-		imageProcessor: imageProcessor,
+		repository:      repository,
+		categoryService: categoryService,
+		imageProcessor:  imageProcessor,
 	}
 }
