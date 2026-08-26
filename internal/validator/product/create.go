@@ -22,10 +22,10 @@ func (v Validator) Create(ctx context.Context, req dto.CreateRequest) error {
 		validation.Field(&req.Slug, validation.Required, validation.Length(SLUG_MIN_LENGTH, SLUG_MAX_LENGTH), validation.Match(SLUG_REGEX)),
 		validation.Field(&req.Description, validation.Required),
 		validation.Field(&req.Price, validation.Required),
-		validation.Field(&req.Stock, validation.Required, validation.Min(0)),
+		validation.Field(&req.Stock),
 		validation.Field(&req.CategoryID, validation.Required),
 		validation.Field(&req.MainImage, validation.Required, validation.By(v.validationImage)),
-		validation.Field(&req.Images, validation.Each(validation.By(v.validationImage))),
+		validation.Field(&req.Images,validation.Required, validation.Each(validation.By(v.validationImage)), validation.Length(1,0)),
 	)
 
 	if err != nil {

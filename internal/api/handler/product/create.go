@@ -27,18 +27,22 @@ func (h Handler) Create(ctx *gin.Context) {
 		)
 		return
 	}
-
-	stockStr := ctx.PostForm("stock")
-	stock, err := strconv.ParseUint(stockStr, 10, 64)
-	if err != nil {
-		response.New(ctx).Error(
-			richerror.New().
-				SetOp(op).
-				SetMsg("stock must be integer").
-				SetKind(richerror.KindBadRequestErr).
-				SetErr(err),
-		)
-		return
+	var stock *uint
+	stockStr, exists := ctx.GetPostForm("stock")
+	if exists {
+		stockUint64, err := strconv.ParseUint(stockStr, 10, 64)
+		if err != nil {
+			response.New(ctx).Error(
+				richerror.New().
+					SetOp(op).
+					SetMsg("stock must be integer").
+					SetKind(richerror.KindBadRequestErr).
+					SetErr(err),
+			)
+			return
+		}
+		stockUint := uint(stockUint64)
+		stock = &stockUint
 	}
 
 	categoryIDStr := ctx.PostForm("category-id")
@@ -76,7 +80,7 @@ func (h Handler) Create(ctx *gin.Context) {
 		Slug:        slug,
 		Description: description,
 		Price:       uint(price),
-		Stock:       uint(stock),
+		Stock:       stock,
 		CategoryID:  uint(categoryID),
 		MainImage:   mainImage,
 		Images:      images,

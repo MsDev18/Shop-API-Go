@@ -17,6 +17,7 @@ type Repository interface {
 	Create(ctx context.Context, product entity.Product, imagePaths []string) (entity.Product, error)
 	GetBySlug(ctx context.Context, slug string) (entity.Product, []entity.ProductImage, error)
 	GetProductImage(ctx context.Context, productID uint) ([]entity.ProductImage, error)
+	IsExistsSlug(ctx context.Context, slug string) (bool, error)
 }
 
 func New(repository Repository, categoryService category.Service, imageProcessor imageprocessor.Processor) Service {
