@@ -17,11 +17,11 @@ func (s Service) GetOne(ctx context.Context, slug string) (dto.CategoryResponse,
 	childrenByParent := make(map[uint][]entity.Category)
 
 	if c.ParentID == nil {
-		children, err := s.repository.GetChildrenByParentID(ctx, c.ID)
+		childrens, err := s.repository.GetChildrenByParentID(ctx, c.ID)
 		if err != nil {
 			return dto.CategoryResponse{}, err
 		}
-		childrenByParent[c.ID] = children
+		childrenByParent[c.ID] = childrens
 	}
 
 	response := s.mapToCategoryResponse([]entity.Category{c}, childrenByParent)
