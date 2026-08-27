@@ -7,4 +7,5 @@ func (r Router) registerProductRoute() {
 
 	productG.POST("", r.authMiddleware.AuthRequired(), r.authMiddleware.RoleRequired(entity.AdminRole), r.productHandler.Create)
 	productG.GET("/:slug" , r.productHandler.GetOneBySlug)
+	productG.GET("" , r.productHandler.GetAll)
 }
