@@ -8,7 +8,7 @@ import (
 	"shop/internal/pkg/richerror"
 )
 
-func (r Repository) GetBySlug(ctx context.Context, slug string) (entity.Product, []entity.ProductImage, error) {
+func (r Repository) GetOneBySlug(ctx context.Context, slug string) (entity.Product, []entity.ProductImage, error) {
 	const op = "product-repository.GetBySlug"
 
 	const productQuery = `SELECT * FROM product WHERE slug = ? AND deleted_at IS NULL`
