@@ -25,7 +25,7 @@ func (v Validator) Create(ctx context.Context, req dto.CreateRequest) error {
 		validation.Field(&req.Stock),
 		validation.Field(&req.CategoryID, validation.Required),
 		validation.Field(&req.MainImage, validation.Required, validation.By(v.validationImage)),
-		validation.Field(&req.Images,validation.Required, validation.Each(validation.By(v.validationImage)), validation.Length(1,0)),
+		validation.Field(&req.Images, validation.Each(validation.By(v.validationImage)), validation.Length(1, 0)),
 	)
 
 	if err != nil {
@@ -55,8 +55,13 @@ func (v Validator) Create(ctx context.Context, req dto.CreateRequest) error {
 func (v Validator) validationImage(value any) error {
 	const op = "product-validator.validationImage"
 
-	fileHeader, ok := value.(*multipart.FileHeader)
-	if !ok {
+	var fileHeader *multipart.FileHeader
+	switch fh := value.(type) {
+	case *multipart.FileHeader:
+		fileHeader = fh
+	case multipart.FileHeader:
+		fileHeader = &fh
+	default:
 		return richerror.New().
 			SetOp(op).
 			SetMsg("type assertion error").

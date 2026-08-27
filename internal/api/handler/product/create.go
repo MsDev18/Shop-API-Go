@@ -1,11 +1,12 @@
 package product
 
 import (
-	"github.com/gin-gonic/gin"
 	dto "shop/internal/dto/product"
 	"shop/internal/pkg/response"
 	"shop/internal/pkg/richerror"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func (h Handler) Create(ctx *gin.Context) {
@@ -27,6 +28,7 @@ func (h Handler) Create(ctx *gin.Context) {
 		)
 		return
 	}
+
 	var stock *uint
 	stockStr, exists := ctx.GetPostForm("stock")
 	if exists {
@@ -85,7 +87,6 @@ func (h Handler) Create(ctx *gin.Context) {
 		MainImage:   mainImage,
 		Images:      images,
 	}
-
 	// validation
 	if validationErr := h.validator.Create(ctx.Request.Context(), req); validationErr != nil {
 		response.New(ctx).Error(validationErr)

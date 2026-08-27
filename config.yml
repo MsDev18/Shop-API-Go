@@ -13,7 +13,7 @@ server:
 
 auth_service:
   # 60 * 15 -> 15 Minutes
-  access_token_duration: 15m
+  access_token_duration: 60m
   # 60 * 60 * 24 * 30 -> 30 days 
   refresh_token_duration: 720h
   # 60 * 2 -> 2 Minutes 
