@@ -6,7 +6,7 @@ import (
 )
 
 func (s Service) GetOneBySlug(ctx context.Context, slug string) (dto.CreateResponse, error) {
-	const op = "product-handler.GetOneBySlug"
+	const op = "product-service.GetOneBySlug"
 
 	p, pImage, err := s.repository.GetOneBySlug(ctx, slug)
 	if err != nil {

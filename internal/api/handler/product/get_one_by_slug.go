@@ -13,7 +13,7 @@ func (h Handler) GetOneBySlug(ctx *gin.Context) {
 
 	// we don't need validation
 	// call service 
-	res, err := h.service.GetOneBySlug(ctx, slug)
+	res, err := h.service.GetOneBySlug(ctx.Request.Context(), slug)
 	if err != nil {
 		response.New(ctx).Error(err)
 		return

@@ -238,6 +238,13 @@ All responses use the envelope shown in [Architecture](#architecture). Endpoints
 | PATCH | `/address/:id` | 🔒 Partially update an address (only fields provided are changed) |
 | DELETE | `/address/:id` | 🔒 Soft-delete an address |
 
+### Product
+
+| Method | Path | Description |
+|---|---|---|
+| POST | `/product` | 🔒👑 Create a product (main image + gallery images, price, optional stock, category) |
+| GET | `/product/:slug` | Get a single product by slug, including its gallery images |
+
 ### Static files
 
 | Method | Path | Description |
@@ -256,7 +263,7 @@ All responses use the envelope shown in [Architecture](#architecture). Endpoints
 
 Tracked in detail in [`plans.md`](./plans.md). Foundational modules (config, error handling, migrations, HTTP server) and the auth/user/category/province/address modules above are done. Still to build, in rough priority order:
 
-- [ ] **Product** — the core catalog: CRUD, listing with filters/search/pagination
+- [ ] **Product** (in progress — create and get-by-slug are done) — remaining: listing with filters/search/pagination, update, delete
 - [ ] **Cart** — add/update/remove items, view current cart
 - [ ] **Order** — checkout from cart, order history, status transitions
 - [ ] **Payment** — payment initiation and gateway callback handling

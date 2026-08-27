@@ -33,9 +33,9 @@ api -
 |        |_____ DELETE /category/:slug ✅ (admin)
 |
 |____ product
-|        |_____ POST /product (admin)
+|        |_____ POST /product (admin) ✅
 |        |_____ GET /product  -> list, pagination + filter(category,price) + search + sort
-|        |_____ GET /product/:slug
+|        |_____ GET /product/:slug ✅
 |        |_____ PATCH /product/:slug (admin)
 |        |_____ DELETE /product/:slug (admin)
 |        |_____ GET /category/:slug/products
